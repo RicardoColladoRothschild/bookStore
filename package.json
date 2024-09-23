@@ -1,13 +1,20 @@
-  {
+{
     "dependencies": {
-      "axios": "^1.7.4",
-      "cors": "^2.8.5",
-      "dotenv": "^16.4.5",
-      "express": "^4.19.2",
-      "typescript": "^5.5.4"
+        "axios": "^1.7.4",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "typescript": "^5.5.4"
     },
     "scripts": {
-      "start:dev": "docker-compose -f docker-compose.yml up --build",
-      "stop:dev": "docker-compose -f docker-compose.yml down"
+        "start:dev": "docker-compose -f docker-compose.yml up --build",
+        "stop:dev": "docker-compose -f docker-compose.yml down",
+        "build": "npm-run-all build:userservice build:orderservice build:productservice",
+        "build:userservice": "npm --prefix ./services/UserService run build",
+        "build:orderservice": "dotnet build ./services/OrderService/OrderService.csproj",
+        "build:productservice": "dotnet build ./services/ProductService/ProductService.csproj"
+    },
+    "devDependencies": {
+        "npm-run-all": "^4.1.5"
     }
-  }
+}

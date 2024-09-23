@@ -1,12 +1,15 @@
 import express, { Request, Response } from "express";
 import { pool } from "../database/postgres";
-
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { saveVerificationToken } from "../middleware/verificationToken";
+import { token } from "morgan";
+import { sendVerificationEmail } from "../middleware/mailer";
 
 const app = express();
 app.use(express.json());
 
-import bcrypt from "bcrypt";
+
 
 const JWT_SECRET = process.env.SECRET_KEY || "";
 let hashEncrypt = 12;
@@ -25,39 +28,6 @@ export const getAllUser = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Internal Error Database" });
   }  
 };
-
-
-// export const createUser = async (req: Request, res: Response) => {
-//   const { username, email, password } = req.body;
-
-//   if(!username || !email || !password) {
-//     return res.status(400).json({ 
-//         error: "Missing Required Fields",
-//         message: "Both 'username' and 'email' are required fields."
-//     });
-//   }
-//   try {
-     
-//     const hashPassword = await bcrypt.hash(password, hashEncrypt);
-
-//     const response = await pool.query(
-//       "INSERT INTO users (username, email, password_hash) VALUES ($1,$2,$3)",
-//       [username, email, hashPassword]
-//     );
-//     console.log(response.rows[0]);
-//     res.json({
-//       message: "User created successfully",
-//       body: {
-//         user: { username, email },
-//       },
-//     });
-//   } catch (error) {
-
-//     console.error("Error creating user:", error);
-
-//     return res.status(500).json({ message: "Internal Erorr Database" });
-//   }
-// };
 
 
 
@@ -92,7 +62,7 @@ export const Login = async (req: Request, res: Response) => {
 export const register = async (req: Request, res: Response) => {
   const { username, email, password, firstname, lastname } = req.body;
   
-  console.log("req.body>>>>>", req.body)
+ 
   if (!username || !email || !password || !firstname || !lastname) {
     return res
       .status(401)
@@ -122,10 +92,15 @@ export const register = async (req: Request, res: Response) => {
     //   expiresIn: "24hr",
     // });
     console.log('USER WAS REGISTER SUCCESFULLY: ', newUser);
+
+    const verification_token = await saveVerificationToken(newUser.id);
+    sendVerificationEmail(email, verification_token)
+
+
     res
       .status(201)
       .json({
-        user: {  username: newUser.username, email: newUser.email }
+        user: {  username: newUser.username, email: newUser.email, message:"User was register Succefully, please check your email." }
       });
   } catch (error) {
     console.log("**********error*********")

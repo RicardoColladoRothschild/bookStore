@@ -4,7 +4,7 @@ using OrderService.Models;
 using OrderService.Repository;
 
 namespace OrderService.Models;
-
+ 
 public class OrderItemRepository : IOrderItemRepository
 {
 
@@ -15,10 +15,15 @@ public class OrderItemRepository : IOrderItemRepository
         _context = context;
     }
 
-    public async Task CreateAsync(OrderItem orderItemModel)
-    {
-        await _context.OrderItems.AddAsync(orderItemModel);
-    }
+     public async Task<OrderItem> CreateAsync(OrderItem orderItemModel)
+        {
+            
+            await _context.OrderItems.AddAsync(orderItemModel);
+           
+            await _context.SaveChangesAsync();
+            
+            return orderItemModel;
+        }
 
     public async Task DeleteAsync(OrderItem orderItemModel)
     {

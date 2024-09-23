@@ -1,7 +1,23 @@
 # Microservices-based BookStore App
 
 
-## Como iniciar el proyecto:
+## Como Preparar el proyecto
+
+1) Debes clonar el proyecto, y descargarlo.
+Una vez hayas clonado el proyecto, desde la raiz del mismo, primero deberas ejecutar un comando para que
+se inicie la instalacion de las dependencias externas que permiten que otras dependencias trabajen:
+
+```
+npm i
+```
+
+2) Ahora deberas hacer un "build" de eso que acabas de descargar.
+
+```
+npm run build
+```
+
+## Corriendo el proyeto
 
 1) Para correr todos los contenedores con sus servicios, luego de clonar el proyecto, y hacer npm i, haga:
 
